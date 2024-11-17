@@ -7,32 +7,34 @@ from pybricks.tools import wait, run_task, multitask
 hub = PrimeHub(observe_channels=[198])
 #TODO read remote control
 
-motorA = Motor(Port.A) #with sticker
-motorB = Motor(Port.B)
-motorA.reset_angle()
-motorB.reset_angle()
+motorA = Motor(Port.A, reset_angle=True, profile=5) #with sticker
+motorB = Motor(Port.B, reset_angle=True, profile=5)
+print(motorB.angle())
+speed = 200
+turn_angle = 180
 
-async def launch_signal():
+
+def launch_signal():
     while not Button.BLUETOOTH in hub.buttons.pressed():
-        await wait(10)
+        wait(10)
 
-async def main():
+def calibrate():
 
+    start_targetA = -90 if motorA.angle() < 10 else 270
+    start_targetB = -270 if motorB.angle() < -10 else 90
 
-
-    
-
-    #startup
-    motorA.run_target(200, -90, then=Stop.COAST, wait=False)
-    motorB.run_target(200, 90, then=Stop.COAST, wait=True)
-
-    await launch_signal()
-    print('pressed')
-
-    motorA.run_target(200, -180, then=Stop.COAST, wait=False)
-    motorB.run_target(200, 180, then=Stop.COAST, wait=True)
-    await wait(2000)
+    motorA.run_target(speed, start_targetA, then=Stop.BRAKE, wait=False)
+    motorB.run_target(speed, start_targetB, then=Stop.BRAKE, wait=True)
 
 
-run_task(main())
+
+calibrate()
+launch_signal()
+#fire
+motorA.run_angle(speed, -turn_angle, then=Stop.BRAKE, wait=False)
+motorB.run_angle(speed, turn_angle, then=Stop.BRAKE, wait=True)
+wait(2000)
+calibrate()
+
+
 print('program end')
