@@ -18,7 +18,7 @@ hub.light.on(Color.ORANGE)
 #get average distance once resting
 distances = []
 for _ in range(100):
-    wait(100)
+    wait(50)
     distances.append(sensor.distance())
     if distances[-1] == 2000: #does not accept 2000 as a distance
         del distances[-1]
@@ -37,7 +37,7 @@ hub.ble.broadcast(False)
 current_dist = sensor.distance()
 while (current_dist < mean_dist+margin or current_dist==2000) and current_dist > mean_dist-margin: #does not accept 2000 as a distance
     current_dist = sensor.distance()
-    wait(50)
+    wait(10)
 
 #fire
 print(current_dist)
